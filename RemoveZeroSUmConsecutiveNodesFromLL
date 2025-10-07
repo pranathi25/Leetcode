@@ -1,0 +1,62 @@
+/**
+ * Definition for singly-linked list.
+ * struct ListNode {
+ *     int val;
+ *     ListNode *next;
+ *     ListNode() : val(0), next(nullptr) {}
+ *     ListNode(int x) : val(x), next(nullptr) {}
+ *     ListNode(int x, ListNode *next) : val(x), next(next) {}
+ * };
+ */
+class Solution {
+public:
+    
+    ListNode* removeZeroSumSublists(ListNode* head) {
+        ListNode* start = head;
+
+
+        vector <int> a;
+        vector<long long> sum;
+        while(start!=NULL){
+            a.push_back(start->val);
+            start = start->next;
+        }
+
+        long long csum = 0;
+        for (int i=0; i< a.size(); i++) {      
+            csum += a[i];
+            sum.push_back(csum);
+        }
+
+       for (int i = 0; i < (int)a.size(); i++) {
+            if (sum[i] == 0) {
+                for (int k = 0; k <= i; k++) {
+                    a[k] = 1002;
+                    sum[k] = 0;
+                }
+            } else {
+                if (sum[i] != 1002) {
+                    for (int j = 0; j < i; j++) { 
+                        if (sum[i] == sum[j] && sum[j] != 1002) {
+                            for (int k = j + 1; k <= i; k++) { 
+                                a[k] = 1002;
+                                sum[k] = 1002;
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+        ListNode result;
+        ListNode* current;
+        current = &result;
+        for(int i=0;i<a.size();i++) {
+            if (a[i] != 1002) {
+                current->next = new ListNode(a[i]);
+                current = current->next;
+            }
+        }
+       return result.next;
+    }
+};
